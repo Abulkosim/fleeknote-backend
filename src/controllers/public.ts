@@ -1,14 +1,15 @@
-import { Request, Response, RequestHandler } from 'express';
+import { Request, Response, RequestHandler, NextFunction} from 'express';
+import { createError } from '../utils/errors';
 import User from '../models/User';
 import Note from '../models/Note';
 
-export const getUserPublicNotes: RequestHandler = async (req: Request, res: Response): Promise<any> => {
+export const getUserPublicNotes: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
         const { username } = req.params;
         
         const user = await User.findOne({ username });
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            throw createError(404, 'User not found');
         }
 
         const notes = await Note.find({ 
@@ -18,17 +19,17 @@ export const getUserPublicNotes: RequestHandler = async (req: Request, res: Resp
 
         res.json(notes);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching public notes' });
+        next(error);
     }
 };
 
-export const getPublicNoteBySlug: RequestHandler = async (req: Request, res: Response): Promise<any> => {
+export const getPublicNoteBySlug: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
         const { username, slug } = req.params;
         
         const user = await User.findOne({ username });
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            throw createError(404, 'User not found');
         }
 
         const note = await Note.findOne({
@@ -38,11 +39,11 @@ export const getPublicNoteBySlug: RequestHandler = async (req: Request, res: Res
         }).select('title content slug createdAt updatedAt');
 
         if (!note) {
-            return res.status(404).json({ error: 'Note not found' });
+            throw createError(404, 'Note not found');
         }
 
         res.json(note);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching note' });
+        next(error);
     }
 }; 

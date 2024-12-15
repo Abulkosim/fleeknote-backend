@@ -1,8 +1,9 @@
-import { Response, RequestHandler } from 'express';
+import { Response, RequestHandler, NextFunction } from 'express';
 import { AuthRequest } from '../middleware/auth';
+import { createError } from '../utils/errors';
 import Note from '../models/Note';
 
-export const createNote: RequestHandler = async (req: AuthRequest, res: Response): Promise<any> => {
+export const createNote: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
     try {
         const note = new Note({
             ...req.body,
@@ -11,32 +12,32 @@ export const createNote: RequestHandler = async (req: AuthRequest, res: Response
         await note.save();
         res.status(201).json(note);
     } catch (error) {
-        res.status(500).json({ error: 'Error creating note' });
+        next(error);
     }
 };
 
-export const getNotes: RequestHandler = async (req: AuthRequest, res: Response): Promise<any> => {
+export const getNotes: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
     try {
         const notes = await Note.find({ owner: req.user?.id });
         res.json(notes);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching notes' });
+        next(error);
     }
 };
 
-export const getNote: RequestHandler = async (req: AuthRequest, res: Response): Promise<any> => {
+export const getNote: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
     try {
         const note = await Note.findOne({ _id: req.params.id, owner: req.user?.id });
         if (!note) {
-            return res.status(404).json({ error: 'Note not found' });
+            throw createError(404, 'Note not found');
         }
         res.json(note);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching note' });
+        next(error);
     }
 };
 
-export const updateNote: RequestHandler = async (req: AuthRequest, res: Response): Promise<any> => {
+export const updateNote: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
     try {
         const { slug, ...updateData } = req.body;
         
@@ -47,21 +48,21 @@ export const updateNote: RequestHandler = async (req: AuthRequest, res: Response
         );
         
         if (!note) {
-            return res.status(404).json({ error: 'Note not found' });
+            throw createError(404, 'Note not found');
         }
         
         res.json(note);
     } catch (error) {
-        res.status(500).json({ error: 'Error updating note' });
+        next(error);
     }
 };
 
-export const togglePublish: RequestHandler = async (req: AuthRequest, res: Response): Promise<any> => {
+export const togglePublish: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
     try {
         const note = await Note.findOne({ _id: req.params.id, owner: req.user?.id });
         
         if (!note) {
-            return res.status(404).json({ error: 'Note not found' });
+            throw createError(404, 'Note not found');
         }
 
         note.isPublic = !note.isPublic;
@@ -69,18 +70,18 @@ export const togglePublish: RequestHandler = async (req: AuthRequest, res: Respo
         
         res.json(note);
     } catch (error) {
-        res.status(500).json({ error: 'Error toggling note visibility' });
+        next(error);
     }
 };
 
-export const deleteNote: RequestHandler = async (req: AuthRequest, res: Response): Promise<any> => {
+export const deleteNote: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
     try {
         const note = await Note.findOneAndDelete({ _id: req.params.id, owner: req.user?.id });
         if (!note) {
-            return res.status(404).json({ error: 'Note not found' });
+            throw createError(404, 'Note not found');
         }
         res.json({ message: 'Note deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Error deleting note' });
+        next(error);
     }
 }; 

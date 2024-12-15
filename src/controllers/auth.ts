@@ -1,14 +1,15 @@
-import { Request, Response, RequestHandler } from 'express';
+import { Request, Response, RequestHandler, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { createError } from '../utils/errors';
 import User from '../models/User';
 
-export const register: RequestHandler = async (req, res): Promise<any> => {
+export const register: RequestHandler = async (req, res, next): Promise<any> => {
     try {
         const { username, email, password } = req.body;
 
         const existingUser = await User.findOne({ $or: [{ email }, { username }] });
         if (existingUser) {
-            return res.status(400).json({ error: 'User already exists' });
+            throw createError(400, 'User already exists');
         }
 
         const user = new User({ username, email, password });
@@ -20,22 +21,22 @@ export const register: RequestHandler = async (req, res): Promise<any> => {
 
         res.status(201).json({ user: { id: user._id, username, email }, token })
     } catch (error) {
-        res.status(500).json({ error: 'Error creating user' });
+        next(error);
     }
 }
 
-export const login: RequestHandler = async (req, res): Promise<any> => {
+export const login: RequestHandler = async (req, res, next): Promise<any> => {
     try {
         const { email, password } = req.body;
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            throw createError(401, 'Invalid credentials');
         }
 
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            throw createError(401, 'Invalid credentials');
         }
 
 
@@ -45,6 +46,6 @@ export const login: RequestHandler = async (req, res): Promise<any> => {
 
         res.json({ user: { id: user._id, username: user.username, email }, token });
     } catch (error) {
-        res.status(500).json({ error: 'Error logging in' });
+        next(error);
     }
 }

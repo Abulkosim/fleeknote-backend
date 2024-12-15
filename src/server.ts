@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import authRoutes from './routes/auth';
 import noteRoutes from './routes/notes';
 import publicRoutes from './routes/public';
+import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ const startServer = async () => {
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api', publicRoutes);
+app.use(errorHandler);
 
 startServer();
 

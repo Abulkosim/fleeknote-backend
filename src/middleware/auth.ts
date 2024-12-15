@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { createError } from '../utils/errors';
 
 export interface AuthRequest extends Request {
     user?: { id: string };
@@ -10,14 +11,17 @@ export const auth = async (req: AuthRequest, res: Response, next: NextFunction) 
         const token = req.header('Authorization')?.replace('Bearer ', '');
 
         if (!token) {
-            throw new Error();
+            throw createError(401, 'Authentication token required');
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
-
         req.user = decoded;
         next();
     } catch (error) {
-        res.status(401).json({ error: 'Please authenticate' });
+        if (error instanceof jwt.JsonWebTokenError) {
+            next(createError(401, 'Invalid token'));
+            return;
+        }
+        next(error);
     }
-}
+};
