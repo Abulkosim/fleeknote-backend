@@ -7,6 +7,8 @@ import noteRoutes from './routes/notes';
 import publicRoutes from './routes/public';
 import { errorHandler } from './middleware/errorHandler';
 import { apiLimiter, authLimiter } from './middleware/rateLimiter';
+import swaggerUi from 'swagger-ui-express';
+import { specs } from './utils/swagger';
 
 dotenv.config();
 
@@ -48,6 +50,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api', publicRoutes);
 app.use(errorHandler);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 startServer();
 
