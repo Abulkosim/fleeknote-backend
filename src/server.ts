@@ -6,6 +6,7 @@ import authRoutes from './routes/auth';
 import noteRoutes from './routes/notes';
 import publicRoutes from './routes/public';
 import { errorHandler } from './middleware/errorHandler';
+import { apiLimiter, authLimiter } from './middleware/rateLimiter';
 
 dotenv.config();
 
@@ -41,6 +42,8 @@ const startServer = async () => {
     }
 };
 
+app.use('/api/', apiLimiter);
+app.use('/api/auth/', authLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api', publicRoutes);

@@ -52,6 +52,15 @@ export const errorHandler: ErrorRequestHandler = (
         return;
     }
 
+    if ((err as any).statusCode === 429) {
+        res.status(429).json({
+            status: 'error',
+            message: err.message,
+            retryAfter: res.getHeader('Retry-After')
+        });
+        return;
+    }
+
     // Default error
     console.error('Error:', err);
     res.status(500).json({
