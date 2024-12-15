@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import authRoutes from './routes/auth';
+import noteRoutes from './routes/notes';
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ const startServer = async () => {
 };
 
 app.use('/api/auth', authRoutes);
+app.use('/api/notes', noteRoutes);
 
 startServer();
 
