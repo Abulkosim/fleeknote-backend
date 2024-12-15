@@ -38,17 +38,38 @@ export const getNote: RequestHandler = async (req: AuthRequest, res: Response): 
 
 export const updateNote: RequestHandler = async (req: AuthRequest, res: Response): Promise<any> => {
     try {
+        const { slug, ...updateData } = req.body;
+        
         const note = await Note.findOneAndUpdate(
             { _id: req.params.id, owner: req.user?.id },
-            req.body,
+            updateData,
             { new: true }
         );
+        
         if (!note) {
             return res.status(404).json({ error: 'Note not found' });
         }
+        
         res.json(note);
     } catch (error) {
         res.status(500).json({ error: 'Error updating note' });
+    }
+};
+
+export const togglePublish: RequestHandler = async (req: AuthRequest, res: Response): Promise<any> => {
+    try {
+        const note = await Note.findOne({ _id: req.params.id, owner: req.user?.id });
+        
+        if (!note) {
+            return res.status(404).json({ error: 'Note not found' });
+        }
+
+        note.isPublic = !note.isPublic;
+        await note.save();
+        
+        res.json(note);
+    } catch (error) {
+        res.status(500).json({ error: 'Error toggling note visibility' });
     }
 };
 

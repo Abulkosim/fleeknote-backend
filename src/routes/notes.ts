@@ -5,7 +5,8 @@ import {
     getNotes,
     getNote,
     updateNote,
-    deleteNote
+    deleteNote,
+    togglePublish
 } from '../controllers/notes';
 
 const router = express.Router();
@@ -15,5 +16,6 @@ router.get('/', auth, getNotes);
 router.get('/:id', auth, getNote);
 router.patch('/:id', auth, updateNote);
 router.delete('/:id', auth, deleteNote);
+router.post('/:id/toggle-publish', auth, togglePublish);
 
 export default router; 
