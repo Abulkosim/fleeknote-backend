@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import authRoutes from './routes/auth';
 
 dotenv.config();
 
@@ -36,6 +37,8 @@ const startServer = async () => {
         console.error('Error starting server: ', error);
     }
 };
+
+app.use('/api/auth', authRoutes);
 
 startServer();
 
