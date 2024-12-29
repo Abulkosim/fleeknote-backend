@@ -1,4 +1,4 @@
-# FleetNote - Minimalist Note-Taking Application
+# FleekNote - Minimalist Note-Taking Application
 
 ## Overview
 A fast, minimalistic web-based note-taking application that provides a native app-like experience. The focus is on simplicity, speed, and reliability for quick notes and blog posts.
@@ -50,7 +50,7 @@ A fast, minimalistic web-based note-taking application that provides a native ap
 
 ## Implementation Phases
 
-### Phase 1 (move on to frontend once the backend is done)
+### Phase 1
 - [ ] Basic application setup
 - [ ] Authentication system
 - [ ] Note editor implementation

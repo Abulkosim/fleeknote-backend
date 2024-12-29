@@ -36,7 +36,7 @@ export const sendResetEmail = async (to: string, resetUrl: string) => {
         }
 
         const mailOptions = {
-            from: `FleetNote <${process.env.EMAIL_USER}>`,
+            from: `FleekNote <${process.env.EMAIL_USER}>`,
             to,
             subject: 'Password Reset Request',
             html: `
@@ -103,19 +103,19 @@ export const sendResetEmail = async (to: string, resetUrl: string) => {
                 <body>
                     <div class="container">
                         <div class="header">
-                            <div class="logo">FleetNote</div>
+                            <div class="logo">FleekNote</div>
                         </div>
                         <div class="content">
                             <p>Hello,</p>
-                            <p>We received a request to reset your password for your FleetNote account.</p>
+                            <p>We received a request to reset your password for your FleekNote account.</p>
                             <div style="text-align: center;">
                                 <a href="${resetUrl}" class="button" style="color: #ffffff;">Reset Password</a>
                             </div>
                             <p style="font-size: 13px; color: #5f6368;">This link will expire in 30 minutes. If you didn't request this reset, you can safely ignore this email.</p>
                         </div>
                         <div class="footer">
-                            This is an automated message from FleetNote.<br>
-                            © ${new Date().getFullYear()} FleetNote
+                            This is an automated message from FleekNote.<br>
+                            © ${new Date().getFullYear()} FleekNote
                         </div>
                     </div>
                 </body>

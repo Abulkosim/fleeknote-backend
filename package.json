@@ -1,7 +1,7 @@
 {
   "name": "fleeknote-backend",
   "version": "1.0.0",
-  "description": "Backend for FleetNote - A minimalist note-taking application",
+  "description": "Backend for FleekNote - A minimalist note-taking application",
   "main": "dist/server.js",
   "scripts": {
     "start": "node dist/server.js",
