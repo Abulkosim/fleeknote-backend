@@ -15,7 +15,6 @@ export const errorHandler: ErrorRequestHandler = (
         return;
     }
 
-    // Handle mongoose validation errors
     if (err.name === 'ValidationError') {
         res.status(400).json({
             status: 'error',
@@ -25,7 +24,6 @@ export const errorHandler: ErrorRequestHandler = (
         return;
     }
 
-    // Handle mongoose duplicate key errors
     if (err.name === 'MongoServerError' && (err as any).code === 11000) {
         res.status(400).json({
             status: 'error',
@@ -34,7 +32,6 @@ export const errorHandler: ErrorRequestHandler = (
         return;
     }
 
-    // Handle JWT errors
     if (err.name === 'JsonWebTokenError') {
         res.status(401).json({
             status: 'error',
@@ -43,7 +40,6 @@ export const errorHandler: ErrorRequestHandler = (
         return;
     }
 
-    // Handle JWT expiration
     if (err.name === 'TokenExpiredError') {
         res.status(401).json({
             status: 'error',
@@ -61,7 +57,6 @@ export const errorHandler: ErrorRequestHandler = (
         return;
     }
 
-    // Default error
     console.error('Error:', err);
     res.status(500).json({
         status: 'error',
