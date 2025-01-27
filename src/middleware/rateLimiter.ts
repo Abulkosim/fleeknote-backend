@@ -14,7 +14,7 @@ export const apiLimiter = rateLimit({
 
 export const authLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, 
-    max: 5, 
+    max: 10, 
     message: 'Too many login attempts, please try again after an hour',
     handler: (req, res, next, options) => {
         next(createError(429, options.message));
