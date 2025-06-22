@@ -18,7 +18,7 @@ export const createNote: RequestHandler = async (req: AuthRequest, res: Response
 
 export const getNotes: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
     try {
-        const notes = await Note.find({ owner: req.user?.id });
+        const notes = await Note.find({ owner: req.user?.id }).sort({ createdAt: -1 });
         res.json(notes);
     } catch (error) {
         next(error);
