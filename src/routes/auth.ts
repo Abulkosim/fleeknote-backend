@@ -1,5 +1,6 @@
 import express from 'express';
-import { register, login, forgotPassword, resetPassword } from '../controllers/auth';
+import { register, login, forgotPassword, resetPassword, getUser } from '../controllers/auth';
+import { auth } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -177,5 +178,38 @@ router.post('/forgot-password', forgotPassword);
  *         description: Error resetting password
  */
 router.post('/reset-password/:token', resetPassword);
+
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     summary: Get current user details
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 username:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 createdAt:
+ *                   type: string
+ *                 updatedAt:
+ *                   type: string
+ *       401:
+ *         description: Not authenticated
+ *       404:
+ *         description: User not found
+ */
+router.get('/me', auth, getUser);
 
 export default router; 

@@ -4,6 +4,7 @@ import { createError } from '../utils/errors';
 import User from '../models/User';
 import crypto from 'crypto';
 import { sendResetEmail } from '../utils/email';
+import { AuthRequest } from '../middleware/auth';
 
 export const register: RequestHandler = async (req, res, next): Promise<any> => {
     try {
@@ -115,6 +116,15 @@ export const resetPassword: RequestHandler = async (req: Request, res: Response,
         res.json({
             message: 'Password reset successful'
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getUser: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
+    try {
+        const user = await User.findById(req.user?.id).select('-password');
+        res.json(user);
     } catch (error) {
         next(error);
     }
