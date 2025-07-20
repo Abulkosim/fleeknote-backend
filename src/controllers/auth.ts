@@ -129,3 +129,12 @@ export const getUser: RequestHandler = async (req: AuthRequest, res: Response, n
         next(error);
     }
 };
+
+export const deleteUser: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
+    try {
+        await User.findByIdAndDelete(req.user?.id);
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        next(error);
+    }
+};
