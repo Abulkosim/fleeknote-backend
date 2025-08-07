@@ -37,6 +37,23 @@ export const getNote: RequestHandler = async (req: AuthRequest, res: Response, n
     }
 };
 
+export const getNoteLink: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
+    try {
+        const note = await Note.findOne({ _id: req.params.id, owner: req.user?.id });
+        
+        if (!note) {
+            throw createError(404, 'Note not found');
+        }
+        
+        res.json({
+            slug: note.slug,
+            username: req.user?.username
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const updateNote: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
     try {
         const { slug, ...updateData } = req.body;

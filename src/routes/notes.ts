@@ -6,7 +6,8 @@ import {
     getNote,
     updateNote,
     deleteNote,
-    togglePublish
+    togglePublish, 
+    getNoteLink
 } from '../controllers/notes';
 
 const router = express.Router();
@@ -196,5 +197,38 @@ router.post('/:id/toggle-publish', auth, togglePublish);
  *         description: Note not found
  */
 router.delete('/:id', auth, deleteNote);
+
+/**
+ * @swagger
+ * /api/notes/{id}/link:
+ *   get:
+ *     summary: Get a note link
+ *     tags: [Notes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:   
+ *       200:
+ *         description: Note link retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:    
+ *                 username:
+ *                   type: string
+ *                 slug:
+ *                   type: string
+ *       404:
+ *         description: Note not found
+ *       403:
+ *         description: Note is not public. Please make it public first.
+ */
+router.get('/:id/link', auth, getNoteLink)
 
 export default router; 

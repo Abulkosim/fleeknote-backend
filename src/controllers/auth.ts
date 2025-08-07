@@ -18,7 +18,7 @@ export const register: RequestHandler = async (req, res, next): Promise<any> => 
         const user = new User({ username, email, password });
         await user.save();
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+        const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET as string, {
             expiresIn: '7d'
         });
 
@@ -43,7 +43,7 @@ export const login: RequestHandler = async (req, res, next): Promise<any> => {
         }
 
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+        const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET as string, {
             expiresIn: '7d'
         })
 
