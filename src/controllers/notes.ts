@@ -44,6 +44,10 @@ export const getNoteLink: RequestHandler = async (req: AuthRequest, res: Respons
         if (!note) {
             throw createError(404, 'Note not found');
         }
+
+        if (!note.isPublic) {
+            throw createError(403, 'Note is not public. Please make it public first.');
+        }
         
         res.json({
             slug: note.slug,
