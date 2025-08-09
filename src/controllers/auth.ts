@@ -129,7 +129,7 @@ export const getUser: RequestHandler = async (req: AuthRequest, res: Response, n
         next(error);
     }
 };
-
+// TODO: delete notes too
 export const deleteUser: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
     try {
         await User.findByIdAndDelete(req.user?.id);

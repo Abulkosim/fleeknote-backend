@@ -3,6 +3,7 @@ import { createError } from '../utils/errors';
 import User from '../models/User';
 import Note from '../models/Note';
 
+// TODO: add limit or pagination
 export const getUserPublicNotes: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
         const { username } = req.params;
