@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, forgotPassword, resetPassword, getUser, deleteUser } from '../controllers/auth';
+import { register, login, forgotPassword, resetPassword, getUser, deleteUser, updateProfile } from '../controllers/auth';
 import { auth } from '../middleware/auth';
 
 const router = express.Router();
@@ -225,4 +225,20 @@ router.get('/me', auth, getUser);
  *         description: User deleted successfully
  */
 router.delete('/delete', auth, deleteUser);
+
+/**
+ * @swagger
+ * /api/auth/update-profile:
+ *   post:
+ *     summary: Update current user profile
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Profile updated successfull
+ *       404:
+ *         description: User not found
+ */
+router.post('/update-profile', auth, updateProfile)
 export default router; 

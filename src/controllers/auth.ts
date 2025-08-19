@@ -138,3 +138,21 @@ export const deleteUser: RequestHandler = async (req: AuthRequest, res: Response
         next(error);
     }
 };
+
+export const updateProfile: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
+    try {
+        const { username } = req.body; 
+
+        const user = await User.findById(req.user?.id);
+        if (!user) {
+            throw createError(404, 'User not found');
+        }
+
+        user.username = username;
+        await user.save();
+
+        res.json({ message: 'Profile updated successfully' });
+    } catch (error) {
+        next(error);
+    }
+}
