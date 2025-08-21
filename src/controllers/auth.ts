@@ -141,17 +141,32 @@ export const deleteUser: RequestHandler = async (req: AuthRequest, res: Response
 
 export const updateProfile: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
     try {
-        const { username } = req.body; 
+        const { username, avatar } = req.body;
 
         const user = await User.findById(req.user?.id);
         if (!user) {
             throw createError(404, 'User not found');
         }
 
-        user.username = username;
+        if (username && username.trim()) {
+            user.username = username.trim();
+        }
+
+        if (avatar) {
+            user.avatar = avatar;
+        }
+
         await user.save();
 
-        res.json({ message: 'Profile updated successfully' });
+        res.json({
+            message: 'Profile updated successfully',
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar
+            }
+        });
     } catch (error) {
         next(error);
     }

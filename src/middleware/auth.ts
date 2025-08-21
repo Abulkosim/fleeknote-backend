@@ -3,7 +3,8 @@ import jwt from 'jsonwebtoken';
 import { createError } from '../utils/errors';
 
 export interface AuthRequest extends Request {
-    user?: { id: string, username: string };
+    user?: { id: string, username: string }, 
+    file?: any
 }
 
 export const auth = async (req: AuthRequest, res: Response, next: NextFunction) => {

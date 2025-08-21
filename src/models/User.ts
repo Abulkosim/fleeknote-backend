@@ -5,6 +5,7 @@ export interface IUser extends Document {
     username: string;
     email: string;
     password: string;
+    avatar: string;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -34,6 +35,10 @@ const userSchema = new mongoose.Schema({
     },
     resetPasswordExpires: {
         type: Date,
+        default: null
+    },
+    avatar: {
+        type: String,
         default: null
     }
 }, {
