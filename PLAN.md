@@ -51,15 +51,15 @@ A fast, minimalistic web-based note-taking application that provides a native ap
 ## Implementation Phases
 
 ### Phase 1
-- [ ] Basic application setup
-- [ ] Authentication system
-- [ ] Note editor implementation
-- [ ] Local storage integration
-- [ ] Database setup and integration
-- [ ] Basic CRUD operations
+- [+] Basic application setup
+- [+] Authentication system
+- [+/-] Note editor implementation
+- [+] Local storage integration
+- [+] Database setup and integration
+- [+] Basic CRUD operations
 
 ### Phase 2
-- [ ] Public note sharing
-- [ ] Blog post functionality
-- [ ] User profiles
-- [ ] Advanced editing features 
+- [+] Public note sharing
+- [+] Blog post functionality
+- [+] User profiles
+- [-] Advanced editing features 
