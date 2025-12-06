@@ -1,6 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodObject, ZodError } from 'zod';
-import { createError } from '../utils/errors';
+
+export class ValidationError extends Error {
+    public statusCode = 400;
+    public errors: Array<{ field: string; message: string }>;
+
+    constructor(zodError: ZodError) {
+        super('Validation failed');
+        this.name = 'ValidationError';
+        
+        this.errors = zodError.issues.map((issue) => ({
+            field: issue.path.join('.'),
+            message: issue.message
+        }));
+    }
+}
 
 export const validate = (schema: ZodObject<any>) => {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -14,15 +28,7 @@ export const validate = (schema: ZodObject<any>) => {
             next();
         } catch (error) {
             if (error instanceof ZodError) {
-                const errorMessages = error.issues.map((err) => ({
-                    field: err.path.join('.'),
-                    message: err.message
-                }));
-                const message = errorMessages
-                    .map((e: { field: string; message: string }) => `${e.field}: ${e.message}`)
-                    .join(', ');
-
-                return next(createError(400, `Validation error: ${message}`));
+                return next(new ValidationError(error));
             }
 
             next(error);
