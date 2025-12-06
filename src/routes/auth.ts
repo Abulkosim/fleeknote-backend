@@ -1,6 +1,14 @@
 import express from 'express';
 import { register, login, forgotPassword, resetPassword, getUser, deleteUser, updateProfile } from '../controllers/auth';
 import { auth } from '../middleware/auth';
+import { validate } from '../middleware/validate';
+import { 
+    registerSchema, 
+    loginSchema, 
+    forgotPasswordSchema, 
+    resetPasswordSchema,
+    updateProfileSchema 
+} from '../schemas/auth.schema';
 
 const router = express.Router();
 
@@ -52,7 +60,7 @@ const router = express.Router();
  *       400:
  *         description: User already exists
  */
-router.post('/register', register);
+router.post('/register', validate(registerSchema), register);
 
 /**
  * @swagger
@@ -97,7 +105,7 @@ router.post('/register', register);
  *       401:
  *         description: Invalid credentials
  */
-router.post('/login', login);
+router.post('/login', validate(loginSchema), login);
 
 /**
  * @swagger
@@ -133,7 +141,7 @@ router.post('/login', login);
  *       500:
  *         description: Error sending email
  */
-router.post('/forgot-password', forgotPassword);
+router.post('/forgot-password', validate(forgotPasswordSchema), forgotPassword);
 
 /**
  * @swagger
@@ -177,7 +185,7 @@ router.post('/forgot-password', forgotPassword);
  *       500:
  *         description: Error resetting password
  */
-router.post('/reset-password/:token', resetPassword);
+router.post('/reset-password/:token', validate(resetPasswordSchema), resetPassword);
 
 /**
  * @swagger
@@ -240,5 +248,5 @@ router.delete('/delete', auth, deleteUser);
  *       404:
  *         description: User not found
  */
-router.post('/update-profile', auth, updateProfile)
+router.post('/update-profile', auth, validate(updateProfileSchema), updateProfile)
 export default router; 

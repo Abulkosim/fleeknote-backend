@@ -1,5 +1,6 @@
 import express from 'express';
 import { auth } from '../middleware/auth';
+import { validate } from '../middleware/validate';
 import { 
     createNote,
     getNotes,
@@ -9,6 +10,14 @@ import {
     togglePublish, 
     getNoteLink
 } from '../controllers/notes';
+import {
+    createNoteSchema,
+    updateNoteSchema,
+    getNoteSchema,
+    deleteNoteSchema,
+    togglePublishSchema,
+    getNoteLinkSchema
+} from '../schemas/note.schema';
 
 const router = express.Router();
 
@@ -66,7 +75,7 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/Note'
  */
-router.post('/', auth, createNote);
+router.post('/', auth, validate(createNoteSchema), createNote);
 
 /**
  * @swagger
@@ -112,7 +121,7 @@ router.get('/', auth, getNotes);
  *       404:
  *         description: Note not found
  */
-router.get('/:id', auth, getNote);
+router.get('/:id', auth, validate(getNoteSchema), getNote);
 
 /**
  * @swagger
@@ -148,7 +157,7 @@ router.get('/:id', auth, getNote);
  *       404:
  *         description: Note not found
  */
-router.patch('/:id', auth, updateNote);
+router.patch('/:id', auth, validate(updateNoteSchema), updateNote);
 
 /**
  * @swagger
@@ -174,7 +183,7 @@ router.patch('/:id', auth, updateNote);
  *       404:
  *         description: Note not found
  */
-router.post('/:id/toggle-publish', auth, togglePublish);
+router.post('/:id/toggle-publish', auth, validate(togglePublishSchema), togglePublish);
 
 /**
  * @swagger
@@ -196,7 +205,7 @@ router.post('/:id/toggle-publish', auth, togglePublish);
  *       404:
  *         description: Note not found
  */
-router.delete('/:id', auth, deleteNote);
+router.delete('/:id', auth, validate(deleteNoteSchema), deleteNote);
 
 /**
  * @swagger
@@ -229,6 +238,6 @@ router.delete('/:id', auth, deleteNote);
  *       403:
  *         description: Note is not public. Please make it public first.
  */
-router.get('/:id/link', auth, getNoteLink)
+router.get('/:id/link', auth, validate(getNoteLinkSchema), getNoteLink)
 
 export default router; 
