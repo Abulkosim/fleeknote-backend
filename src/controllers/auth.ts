@@ -1,9 +1,8 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { createError } from '../utils/errors';
+import { createError, sendResetEmail } from '../utils';
 import User from '../models/User';
 import crypto from 'crypto';
-import { sendResetEmail } from '../utils/email';
 import { AuthRequest } from '../middleware/auth';
 
 export const register: RequestHandler = async (req, res, next): Promise<any> => {

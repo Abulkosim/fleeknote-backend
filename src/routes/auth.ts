@@ -1,6 +1,6 @@
 import express from 'express';
 import { register, login, forgotPassword, resetPassword, getUser, deleteUser, updateProfile } from '../controllers/auth';
-import { auth } from '../middleware/auth';
+import { auth } from '../middleware';
 
 const router = express.Router();
 
@@ -241,4 +241,5 @@ router.delete('/delete', auth, deleteUser);
  *         description: User not found
  */
 router.post('/update-profile', auth, updateProfile)
+
 export default router; 
