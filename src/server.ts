@@ -1,14 +1,12 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import mongoose from 'mongoose';
-import authRoutes from './routes/auth';
-import noteRoutes from './routes/notes';
-import publicRoutes from './routes/public';
-import { errorHandler } from './middleware/errorHandler';
-import { apiLimiter, authLimiter } from './middleware/rateLimiter';
 import swaggerUi from 'swagger-ui-express';
-import { specs } from './utils/swagger';
+
+import { specs } from './utils';
+import { connectDB } from './config/database';
+import { authRoutes, noteRoutes, publicRoutes } from './routes';
+import { errorHandler, apiLimiter, authLimiter } from './middleware';
 
 dotenv.config();
 
@@ -19,28 +17,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/health', (_req: Request, res: Response) => {
-    res.status(200).json({ status: 'ok' });
-});
-
-const connectDB = async () => {
-    try {
-        const conn = await mongoose.connect(process.env.MONGODB_URI as string);
-        console.log(`MongoDB connected: ${conn.connection.host}`);
-    } catch (error) {
-        console.error(`Error connecting to MongoDB: `, error);
-        process.exit(1);
-    }
-}
-
 const startServer = async () => {
     try {
         await connectDB();
         app.listen(port, () => {
-            console.log(`[server]: Server is running at http://localhost:${port}`);
+            console.log(`Server is running on port ${port}`);
         });
     } catch (error) {
-        console.error('Error starting server: ', error);
+        console.error('Error starting server', error);
     }
 };
 

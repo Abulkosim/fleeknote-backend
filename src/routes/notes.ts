@@ -1,23 +1,14 @@
 import express from 'express';
-import { auth } from '../middleware/auth';
-import { validate } from '../middleware/validate';
-import { 
+import { auth } from '../middleware';
+import {
     createNote,
     getNotes,
     getNote,
     updateNote,
     deleteNote,
-    togglePublish, 
+    togglePublish,
     getNoteLink
 } from '../controllers/notes';
-import {
-    createNoteSchema,
-    updateNoteSchema,
-    getNoteSchema,
-    deleteNoteSchema,
-    togglePublishSchema,
-    getNoteLinkSchema
-} from '../schemas/note.schema';
 
 const router = express.Router();
 
@@ -75,7 +66,7 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/Note'
  */
-router.post('/', auth, validate(createNoteSchema), createNote);
+router.post('/', auth, createNote);
 
 /**
  * @swagger
@@ -121,7 +112,7 @@ router.get('/', auth, getNotes);
  *       404:
  *         description: Note not found
  */
-router.get('/:id', auth, validate(getNoteSchema), getNote);
+router.get('/:id', auth, getNote);
 
 /**
  * @swagger
@@ -157,7 +148,7 @@ router.get('/:id', auth, validate(getNoteSchema), getNote);
  *       404:
  *         description: Note not found
  */
-router.patch('/:id', auth, validate(updateNoteSchema), updateNote);
+router.patch('/:id', auth, updateNote);
 
 /**
  * @swagger
@@ -183,7 +174,7 @@ router.patch('/:id', auth, validate(updateNoteSchema), updateNote);
  *       404:
  *         description: Note not found
  */
-router.post('/:id/toggle-publish', auth, validate(togglePublishSchema), togglePublish);
+router.post('/:id/toggle-publish', auth, togglePublish);
 
 /**
  * @swagger
@@ -205,7 +196,7 @@ router.post('/:id/toggle-publish', auth, validate(togglePublishSchema), togglePu
  *       404:
  *         description: Note not found
  */
-router.delete('/:id', auth, validate(deleteNoteSchema), deleteNote);
+router.delete('/:id', auth, deleteNote);
 
 /**
  * @swagger
@@ -238,6 +229,6 @@ router.delete('/:id', auth, validate(deleteNoteSchema), deleteNote);
  *       403:
  *         description: Note is not public. Please make it public first.
  */
-router.get('/:id/link', auth, validate(getNoteLinkSchema), getNoteLink)
+router.get('/:id/link', auth, getNoteLink)
 
 export default router; 
