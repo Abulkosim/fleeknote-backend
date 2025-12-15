@@ -1,5 +1,5 @@
 import rateLimit from 'express-rate-limit';
-import { createError } from '../utils/errors';
+import { createError } from '../utils';
 
 export const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, 

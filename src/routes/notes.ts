@@ -1,12 +1,12 @@
 import express from 'express';
-import { auth } from '../middleware/auth';
-import { 
+import { auth } from '../middleware';
+import {
     createNote,
     getNotes,
     getNote,
     updateNote,
     deleteNote,
-    togglePublish, 
+    togglePublish,
     getNoteLink
 } from '../controllers/notes';
 
