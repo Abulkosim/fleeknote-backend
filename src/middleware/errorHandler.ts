@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import { AppError } from '../utils/errors';
+import { ValidationError } from './validate';
 
 export const errorHandler: ErrorRequestHandler = (
     err: Error | AppError,
@@ -15,11 +16,11 @@ export const errorHandler: ErrorRequestHandler = (
         return;
     }
 
-    if (err.name === 'ValidationError') {
-        res.status(400).json({
+    if (err instanceof ValidationError) {
+        res.status(err.statusCode).json({
             status: 'error',
-            message: 'Validation Error',
-            errors: err
+            message: err.message,
+            errors: err.errors
         });
         return;
     }
