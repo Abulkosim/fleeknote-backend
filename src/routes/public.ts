@@ -1,5 +1,7 @@
 import express from 'express';
 import { getUserPublicNotes, getPublicNoteBySlug } from '../controllers/public';
+import { validate } from '../middleware/validate';
+import { getUserPublicNotesSchema, getPublicNoteBySlugSchema } from '../schemas/public.schema';
 
 const router = express.Router();
 
@@ -27,7 +29,7 @@ const router = express.Router();
  *       404:
  *         description: User not found
  */
-router.get('/:username/notes', getUserPublicNotes);
+router.get('/:username/notes', validate(getUserPublicNotesSchema), getUserPublicNotes);
 
 /**
  * @swagger
@@ -56,6 +58,6 @@ router.get('/:username/notes', getUserPublicNotes);
  *       404:
  *         description: Note or user not found
  */
-router.get('/:username/notes/:slug', getPublicNoteBySlug);
+router.get('/:username/notes/:slug', validate(getPublicNoteBySlugSchema), getPublicNoteBySlug);
 
 export default router; 
