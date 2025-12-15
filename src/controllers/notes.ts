@@ -1,6 +1,6 @@
 import { Response, RequestHandler, NextFunction } from 'express';
 import { AuthRequest } from '../middleware/auth';
-import { createError } from '../utils/errors';
+import { createError } from '../utils';
 import Note from '../models/Note';
 
 export const createNote: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
