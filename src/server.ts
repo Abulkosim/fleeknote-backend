@@ -5,7 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 
 import { specs } from './utils';
 import { connectDB } from './config/database';
-import { authRoutes, noteRoutes, publicRoutes } from './routes';
+import { adminRoutes, authRoutes, noteRoutes, publicRoutes } from './routes';
 import { errorHandler, apiLimiter, authLimiter } from './middleware';
 
 dotenv.config();
@@ -33,6 +33,7 @@ app.use('/api/auth/', authLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api', publicRoutes);
+app.use('/api/admin', adminRoutes);
 app.use(errorHandler);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
