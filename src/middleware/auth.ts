@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { createError } from '../utils';
 
 export interface AuthRequest extends Request {
-    user?: { id: string, username: string }, 
+    user?: { id: string, username: string, role: string }, 
     file?: any
 }
 
@@ -15,7 +15,7 @@ export const auth = async (req: AuthRequest, res: Response, next: NextFunction) 
             throw createError(401, 'Authentication token required');
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string, username: string };
+        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string, username: string, role: string };
         req.user = decoded;
         next();
     } catch (error) {
