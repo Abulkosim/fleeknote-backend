@@ -21,7 +21,16 @@ export const register: RequestHandler = async (req, res, next): Promise<any> => 
             expiresIn: '7d'
         });
 
-        res.status(201).json({ user: { id: user._id, username, email }, token })
+        res.status(201).json({ 
+            user: { 
+                id: user._id, 
+                username, 
+                email,
+                role: user.role || 'user',
+                avatar: user.avatar || null,
+            }, 
+            token 
+        })
     } catch (error) {
         next(error);
     }
@@ -46,7 +55,16 @@ export const login: RequestHandler = async (req, res, next): Promise<any> => {
             expiresIn: '7d'
         })
 
-        res.json({ user: { id: user._id, username: user.username, email }, token });
+        res.json({ 
+            user: { 
+                id: user._id, 
+                username: user.username, 
+                email,
+                role: user.role || 'user',
+                avatar: user.avatar || null,
+            }, 
+            token 
+        });
     } catch (error) {
         next(error);
     }
@@ -163,7 +181,8 @@ export const updateProfile: RequestHandler = async (req: AuthRequest, res: Respo
                 id: user._id,
                 username: user.username,
                 email: user.email,
-                avatar: user.avatar
+                role: user.role || 'user',
+                avatar: user.avatar || null,
             }
         });
     } catch (error) {
