@@ -7,6 +7,7 @@ export interface IUser extends Document {
     password: string;
     avatar: string;
     role: string;
+    refreshTokens: string[];
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -46,6 +47,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
+    },
+    refreshTokens: {
+        type: [String],
+        default: []
     }
 }, {
     timestamps: true

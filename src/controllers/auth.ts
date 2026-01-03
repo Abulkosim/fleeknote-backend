@@ -1,6 +1,5 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { createError, sendResetEmail } from '../utils';
+import { createError, sendResetEmail, generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils';
 import User from '../models/User';
 import crypto from 'crypto';
 import { AuthRequest } from '../middleware/auth';
@@ -17,11 +16,33 @@ export const register: RequestHandler = async (req, res, next): Promise<any> => 
         const user = new User({ username, email, password });
         await user.save();
 
-        const token = jwt.sign({ id: user._id, username: user.username, role: user.role || 'user' }, process.env.JWT_SECRET as string, {
-            expiresIn: '7d'
-        });
+        const tokenPayload = { 
+            id: String(user._id), 
+            username: user.username, 
+            role: user.role || 'user' 
+        };
 
+        const accessToken = generateAccessToken(tokenPayload);
+        const refreshToken = generateRefreshToken(tokenPayload);
+
+        user.refreshTokens.push(refreshToken);
+        await user.save();
+
+<<<<<<< Updated upstream
         res.status(201).json({ user: { id: user._id, username, email }, token })
+=======
+        res.status(201).json({ 
+            user: { 
+                id: user._id, 
+                username, 
+                email,
+                role: user.role || 'user',
+                avatar: user.avatar || null,
+            }, 
+            accessToken,
+            refreshToken
+        })
+>>>>>>> Stashed changes
     } catch (error) {
         next(error);
     }
@@ -41,12 +62,33 @@ export const login: RequestHandler = async (req, res, next): Promise<any> => {
             throw createError(401, 'Invalid credentials');
         }
 
+        const tokenPayload = { 
+            id: String(user._id), 
+            username: user.username, 
+            role: user.role || 'user' 
+        };
 
-        const token = jwt.sign({ id: user._id, username: user.username, role: user.role || 'user' }, process.env.JWT_SECRET as string, {
-            expiresIn: '7d'
-        })
+        const accessToken = generateAccessToken(tokenPayload);
+        const refreshToken = generateRefreshToken(tokenPayload);
 
+        user.refreshTokens.push(refreshToken);
+        await user.save();
+
+<<<<<<< Updated upstream
         res.json({ user: { id: user._id, username: user.username, email }, token });
+=======
+        res.json({ 
+            user: { 
+                id: user._id, 
+                username: user.username, 
+                email,
+                role: user.role || 'user',
+                avatar: user.avatar || null,
+            }, 
+            accessToken,
+            refreshToken
+        });
+>>>>>>> Stashed changes
     } catch (error) {
         next(error);
     }
@@ -165,6 +207,64 @@ export const updateProfile: RequestHandler = async (req: AuthRequest, res: Respo
                 email: user.email,
                 avatar: user.avatar
             }
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const refresh: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    try {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            throw createError(401, 'Refresh token required');
+        }
+
+        const decoded = verifyRefreshToken(refreshToken);
+
+        const user = await User.findById(decoded.id);
+        if (!user) {
+            throw createError(401, 'Invalid refresh token');
+        }
+
+        if (!user.refreshTokens.includes(refreshToken)) {
+            throw createError(401, 'Invalid or revoked refresh token');
+        }
+
+        const tokenPayload = { 
+            id: String(user._id), 
+            username: user.username, 
+            role: user.role || 'user' 
+        };
+        const accessToken = generateAccessToken(tokenPayload);
+
+        res.json({ 
+            accessToken
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const logout: RequestHandler = async (req: AuthRequest, res: Response, next: NextFunction): Promise<any> => {
+    try {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            throw createError(400, 'Refresh token required');
+        }
+
+        const user = await User.findById(req.user?.id);
+        if (!user) {
+            throw createError(404, 'User not found');
+        }
+
+        user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
+        await user.save();
+
+        res.json({ 
+            message: 'Logged out successfully' 
         });
     } catch (error) {
         next(error);

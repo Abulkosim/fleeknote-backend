@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, forgotPassword, resetPassword, getUser, deleteUser, updateProfile } from '../controllers/auth';
+import { register, login, forgotPassword, resetPassword, getUser, deleteUser, updateProfile, refresh, logout } from '../controllers/auth';
 import { auth } from '../middleware';
 
 const router = express.Router();
@@ -47,8 +47,12 @@ const router = express.Router();
  *                       type: string
  *                     email:
  *                       type: string
- *                 token:
+ *                 accessToken:
  *                   type: string
+ *                   description: Short-lived access token (15 minutes)
+ *                 refreshToken:
+ *                   type: string
+ *                   description: Long-lived refresh token (7 days)
  *       400:
  *         description: User already exists
  */
@@ -92,8 +96,12 @@ router.post('/register', register);
  *                       type: string
  *                     email:
  *                       type: string
- *                 token:
+ *                 accessToken:
  *                   type: string
+ *                   description: Short-lived access token (15 minutes)
+ *                 refreshToken:
+ *                   type: string
+ *                   description: Long-lived refresh token (7 days)
  *       401:
  *         description: Invalid credentials
  */
@@ -240,6 +248,77 @@ router.delete('/delete', auth, deleteUser);
  *       404:
  *         description: User not found
  */
-router.post('/update-profile', auth, updateProfile)
+router.post('/update-profile', auth, updateProfile);
+
+/**
+ * @swagger
+ * /api/auth/refresh:
+ *   post:
+ *     summary: Refresh access token using refresh token
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refreshToken
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 description: Refresh token received during login/register
+ *     responses:
+ *       200:
+ *         description: New access token generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *       401:
+ *         description: Invalid or expired refresh token
+ */
+router.post('/refresh', refresh);
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout user and revoke refresh token
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refreshToken
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 description: Refresh token to revoke
+ *     responses:
+ *       200:
+ *         description: Logged out successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Logged out successfully
+ *       400:
+ *         description: Refresh token required
+ *       401:
+ *         description: Not authenticated
+ */
+router.post('/logout', auth, logout);
 
 export default router; 

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { createError } from '../utils';
+import { createError, verifyAccessToken } from '../utils';
 
 export interface AuthRequest extends Request {
     user?: { id: string, username: string, role: string }, 
@@ -15,12 +15,12 @@ export const auth = async (req: AuthRequest, res: Response, next: NextFunction) 
             throw createError(401, 'Authentication token required');
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string, username: string, role: string };
+        const decoded = verifyAccessToken(token);
         req.user = decoded;
         next();
     } catch (error) {
-        if (error instanceof jwt.JsonWebTokenError) {
-            next(createError(401, 'Invalid token'));
+        if (error instanceof jwt.JsonWebTokenError || error instanceof jwt.TokenExpiredError) {
+            next(createError(401, 'Invalid or expired token'));
             return;
         }
         next(error);
