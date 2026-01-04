@@ -1,5 +1,9 @@
 # FleekNote - Minimalist Note-Taking Application
 
+**Repositories:**
+- [Frontend](https://github.com/Abulkosim/fleeknote-frontend/)
+- [Backend](https://github.com/Abulkosim/fleeknote-backend)
+
 ## Overview
 A fast, minimalistic web-based note-taking application that provides a native app-like experience. The focus is on simplicity, speed, and reliability for quick notes and blog posts.
 
