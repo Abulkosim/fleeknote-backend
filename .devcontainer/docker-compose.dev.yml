@@ -12,7 +12,7 @@ services:
 
   api:
     build: 
-      context: .
+      context: ..
       dockerfile: Dockerfile.dev
     container_name: fleeknote-api-dev
     restart: unless-stopped
