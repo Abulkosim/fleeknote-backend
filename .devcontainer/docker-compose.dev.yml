@@ -18,9 +18,9 @@ services:
     restart: unless-stopped
     depends_on:
       - mongo
+    env_file:
+      - ../.env
     environment:
-      - PORT=3000
-      - FRONTEND_URL=http://localhost:5173
       - NODE_ENV=development
     ports:
       - "3000:3000"
