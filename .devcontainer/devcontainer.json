@@ -1,0 +1,39 @@
+{
+  "name": "FleeKNote Backend",
+  "dockerComposeFile": "./docker-compose.dev.yml",
+  "service": "api",
+  "workspaceFolder": "/app",
+  
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-azuretools.vscode-docker",
+        "mongodb.mongodb-vscode"
+      ],
+      
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        }
+      }
+    }
+  },
+  
+  "forwardPorts": [3000],
+  
+  "postCreateCommand": "npm install",
+  
+  "shutdownAction": "stopCompose",
+  
+  "portsAttributes": {
+    "3000": {
+      "label": "API",
+      "onAutoForward": "notify"
+    }
+  }
+}
